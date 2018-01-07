@@ -6,7 +6,7 @@ import glob
 
 
 class KivyRecipe(CythonRecipe):
-    version = 'master'
+    version = '1.10.0'
     url = 'https://github.com/kivy/kivy/archive/{version}.zip'
     name = 'kivy'
 
@@ -34,20 +34,13 @@ class KivyRecipe(CythonRecipe):
         env = super(KivyRecipe, self).get_recipe_env(arch)
         if 'sdl2' in self.ctx.recipe_build_order:
             env['USE_SDL2'] = '1'
+            env['KIVY_SPLIT_EXAMPLES'] = '1'
             env['KIVY_SDL2_PATH'] = ':'.join([
                 join(self.ctx.bootstrap.build_dir, 'jni', 'SDL', 'include'),
                 join(self.ctx.bootstrap.build_dir, 'jni', 'SDL2_image'),
                 join(self.ctx.bootstrap.build_dir, 'jni', 'SDL2_mixer'),
                 join(self.ctx.bootstrap.build_dir, 'jni', 'SDL2_ttf'),
                 ])
-
-        # Set include dir for pxi files - Kivy normally handles this
-        # in the setup.py invocation, but we skip this
-        build_dir = self.get_build_dir(arch.arch)
-        if exists(join(build_dir, 'kivy', 'include')):
-            self.cython_args = ['-I{}'.format(join(build_dir, 'kivy', 'include'))]
-
-            env['CFLAGS'] += ' -I{}'.format(join(build_dir, 'kivy', 'include'))
 
         return env
 
