@@ -105,8 +105,8 @@ public class PythonService extends Service implements Runnable {
                     "setLatestEventInfo", Context.class, CharSequence.class,
                     CharSequence.class, PendingIntent.class);
                 func.invoke(notification, context, serviceTitle, serviceDescription, pIntent);
-            } catch (NoSuchMethodException | IllegalAccessException |
-                     IllegalArgumentException | InvocationTargetException e) {
+            } catch (NoSuchMethodException e) {} catch (IllegalAccessException e) { }
+                     catch (IllegalArgumentException e) {} catch(InvocationTargetException e) {
             }
         } else {
             Notification.Builder builder = new Notification.Builder(context);
