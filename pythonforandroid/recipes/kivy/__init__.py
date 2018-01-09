@@ -12,7 +12,7 @@ class KivyRecipe(CythonRecipe):
 
     depends = [('sdl2', 'pygame'), 'pyjnius']
 
-    # patches = ['setargv.patch']
+    patches = ['modkeys.patch']
 
     def cythonize_build(self, env, build_dir='.'):
         super(KivyRecipe, self).cythonize_build(env, build_dir=build_dir)

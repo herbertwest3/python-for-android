@@ -1,0 +1,20 @@
+--- kivy/kivy/core/window/window_sdl2.py	2018-01-09 06:18:21.251632590 +0000
++++ b/kivy/core/window/window_sdl2.py	2018-01-09 06:15:01.199625928 +0000
+@@ -693,14 +693,11 @@
+                 modifiers.add('meta')
+ 
+         if key is not None:
+-            #if key in (KMOD_RSHIFT, KMOD_LSHIFT):
+-            if key in (303, 304):
++            if key in (KMOD_RSHIFT, KMOD_LSHIFT):
+                 modifiers.add('shift')
+-            #if key in (KMOD_RALT, KMOD_LALT):
+-            if key in (307, 308):
++            if key in (KMOD_RALT, KMOD_LALT):
+                 modifiers.add('alt')
+-            #if key in (KMOD_RCTRL, KMOD_LCTRL):
+-            if key in (305, 306):
++            if key in (KMOD_RCTRL, KMOD_LCTRL):
+                 modifiers.add('ctrl')
+             if key in (KMOD_RMETA, KMOD_LMETA):
+                 modifiers.add('meta')
