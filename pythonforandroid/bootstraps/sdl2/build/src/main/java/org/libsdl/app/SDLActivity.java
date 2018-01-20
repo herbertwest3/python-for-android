@@ -275,8 +275,10 @@ public class SDLActivity extends Activity {
         }
 
         int keyCode = event.getKeyCode();
+Log.v("SDL", "SDLActivity dispatchKeyEvent keyCode "+keyCode) ;
         // Ignore certain special keys so they're handled by Android
-//        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN ||
+//
+//       if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN ||
 //            keyCode == KeyEvent.KEYCODE_VOLUME_UP ||
 //            keyCode == KeyEvent.KEYCODE_CAMERA ||
 //            keyCode == 168 || /* API 11: KeyEvent.KEYCODE_ZOOM_IN */
@@ -284,7 +286,25 @@ public class SDLActivity extends Activity {
 //            ) {
 //            return false;
 //        }
-        return super.dispatchKeyEvent(event);
+//
+//        return super.dispatchKeyEvent(event);
+        int newCode = keyCode ;
+        if      (keyCode==KeyEvent.KEYCODE_BACK)        newCode=KeyEvent.KEYCODE_NUMPAD_0 ; // back 4
+        else if (keyCode==KeyEvent.KEYCODE_DPAD_CENTER) newCode=KeyEvent.KEYCODE_NUMPAD_1 ; // trackpad button 23
+        else if (keyCode==KeyEvent.KEYCODE_VOLUME_UP)   newCode=KeyEvent.KEYCODE_NUMPAD_2 ; // vol up 24
+        else if (keyCode==KeyEvent.KEYCODE_VOLUME_DOWN) newCode=KeyEvent.KEYCODE_NUMPAD_3 ; // vol down 25
+        else if (keyCode==KeyEvent.KEYCODE_POWER)       newCode=KeyEvent.KEYCODE_NUMPAD_4 ; // power 26
+        else if (keyCode==KeyEvent.KEYCODE_MENU)        newCode=KeyEvent.KEYCODE_NUMPAD_5 ; // menu button 82
+        else if (keyCode==500)                          newCode=KeyEvent.KEYCODE_NUMPAD_6 ; // R7 custom button 500
+        if (event.getAction()==KeyEvent.ACTION_DOWN) {
+          SDLActivity.onNativeKeyDown(newCode) ;
+          return true ;
+        } else {
+          SDLActivity.onNativeKeyUp(newCode) ;
+          return true ;
+        }
+
+
     }
 
     /** Called by onPause or surfaceDestroyed. Even if surfaceDestroyed
