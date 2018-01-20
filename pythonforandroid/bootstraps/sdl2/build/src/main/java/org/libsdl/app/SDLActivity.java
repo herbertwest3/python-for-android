@@ -289,13 +289,17 @@ Log.v("SDL", "SDLActivity dispatchKeyEvent keyCode "+keyCode) ;
 //
 //        return super.dispatchKeyEvent(event);
         int newCode = keyCode ;
-        if      (keyCode==KeyEvent.KEYCODE_BACK)        newCode=KeyEvent.KEYCODE_NUMPAD_0 ; // back 4
-        else if (keyCode==KeyEvent.KEYCODE_DPAD_CENTER) newCode=KeyEvent.KEYCODE_NUMPAD_1 ; // trackpad button 23
-        else if (keyCode==KeyEvent.KEYCODE_VOLUME_UP)   newCode=KeyEvent.KEYCODE_NUMPAD_2 ; // vol up 24
-        else if (keyCode==KeyEvent.KEYCODE_VOLUME_DOWN) newCode=KeyEvent.KEYCODE_NUMPAD_3 ; // vol down 25
-        else if (keyCode==KeyEvent.KEYCODE_POWER)       newCode=KeyEvent.KEYCODE_NUMPAD_4 ; // power 26
-        else if (keyCode==KeyEvent.KEYCODE_MENU)        newCode=KeyEvent.KEYCODE_NUMPAD_5 ; // menu button 82
-        else if (keyCode==500)                          newCode=KeyEvent.KEYCODE_NUMPAD_6 ; // R7 custom button 500
+        if      (keyCode==500)                          newCode=KeyEvent.KEYCODE_NUMPAD_0 ; // R7 custom button 500
+        else if (keyCode==KeyEvent.KEYCODE_BACK)        newCode=KeyEvent.KEYCODE_NUMPAD_5 ; // back 4
+        else if (keyCode==KeyEvent.KEYCODE_BUTTON_1)    newCode=KeyEvent.KEYCODE_NUMPAD_1 ; // sm 1
+        else if (keyCode==KeyEvent.KEYCODE_BUTTON_2)    newCode=KeyEvent.KEYCODE_NUMPAD_2 ; // sm 2
+        else if (keyCode==KeyEvent.KEYCODE_BUTTON_3)    newCode=KeyEvent.KEYCODE_NUMPAD_3 ; // sm 3
+        else if (keyCode==KeyEvent.KEYCODE_BUTTON_4)    newCode=KeyEvent.KEYCODE_NUMPAD_4 ; // sm 4
+        else if (keyCode==KeyEvent.KEYCODE_DPAD_CENTER) newCode=KeyEvent.KEYCODE_NUMPAD_6 ; // trackpad button 23
+        else if (keyCode==KeyEvent.KEYCODE_MENU)        newCode=KeyEvent.KEYCODE_NUMPAD_7 ; // menu button 82
+        else if (keyCode==KeyEvent.KEYCODE_POWER)       newCode=KeyEvent.KEYCODE_NUMPAD_MULTIPLY ; // power 26
+        else if (keyCode==KeyEvent.KEYCODE_VOLUME_UP)   newCode=KeyEvent.KEYCODE_NUMPAD_ADD ; // vol up 24
+        else if (keyCode==KeyEvent.KEYCODE_VOLUME_DOWN) newCode=KeyEvent.KEYCODE_NUMPAD_SUBTRACT ; // vol down 25
         if (event.getAction()==KeyEvent.ACTION_DOWN) {
           SDLActivity.onNativeKeyDown(newCode) ;
           return true ;
