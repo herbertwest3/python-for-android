@@ -275,6 +275,26 @@ public class SDLActivity extends Activity {
         }
 
         int keyCode = event.getKeyCode();
+
+        // Dispatch the different events depending on where they come from
+        // Some SOURCE_DPAD or SOURCE_GAMEPAD are also SOURCE_KEYBOARD
+        // So, we try to process them as DPAD or GAMEPAD events first, if that fails we try them as KEYBOARD
+
+        if ( (event.getSource() & InputDevice.SOURCE_GAMEPAD) != 0 ||
+                   (event.getSource() & InputDevice.SOURCE_DPAD) != 0 ) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+Log.v("SDL", "SDLActivity dispatchKeyEvent paddown keyCode "+keyCode) ;
+                if (SDLActivity.onNativePadDown(event.getDeviceId(), keyCode) == 0) {
+                    return true;
+                }
+            } else if (event.getAction() == KeyEvent.ACTION_UP) {
+Log.v("SDL", "SDLActivity dispatchKeyEvent padup keyCode "+keyCode) ;
+                if (SDLActivity.onNativePadUp(event.getDeviceId(), keyCode) == 0) {
+                    return true;
+                }
+            }
+        }
+
 Log.v("SDL", "SDLActivity dispatchKeyEvent keyCode "+keyCode) ;
         // Ignore certain special keys so they're handled by Android
 //
