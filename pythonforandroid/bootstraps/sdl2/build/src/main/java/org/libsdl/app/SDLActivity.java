@@ -310,6 +310,7 @@ Log.v("SDL", "SDLActivity dispatchKeyEvent keyCode "+keyCode) ;
 //        return super.dispatchKeyEvent(event);
         int newCode = keyCode ;
         if      (keyCode==500)                          newCode=KeyEvent.KEYCODE_NUMPAD_0 ; // R7 custom button 500
+        else if (keyCode==5000)                         newCode=KeyEvent.KEYCODE_NUMPAD_8 ; // R7 doubleclick MENU
         else if (keyCode==KeyEvent.KEYCODE_BACK)        newCode=KeyEvent.KEYCODE_NUMPAD_5 ; // back 4
         else if (keyCode==KeyEvent.KEYCODE_BUTTON_1)    newCode=KeyEvent.KEYCODE_NUMPAD_1 ; // sm 1
         else if (keyCode==KeyEvent.KEYCODE_BUTTON_2)    newCode=KeyEvent.KEYCODE_NUMPAD_2 ; // sm 2
