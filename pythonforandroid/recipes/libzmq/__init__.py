@@ -58,6 +58,19 @@ class LibZMQRecipe(Recipe):
     def get_recipe_env(self, arch):
         # XXX should stl be configuration for the toolchain itself?
         env = super(LibZMQRecipe, self).get_recipe_env(arch)
+
+        # additions mirror the fixes to numpy
+        api_ver = self.ctx.android_api
+        platform = 'arm' if 'arm' in arch.arch else arch.arch
+        flags = " -L{ctx.ndk_dir}/platforms/android-{api_ver}/arch-{platform}/usr/lib/ --sysroot={ctx.ndk_dir}/platforms/android-{api_ver}/arch-{platform}".format(ctx=self.ctx, arch=arch, platform=platform, api_ver=api_ver)
+        if flags not in env['CC'] :
+          env['CC'] + flags
+        if flags not in env['LD'] :
+          env['LD'] += flags + ' -shared' 
+        # possibly this is the only one that matters --
+        if flags not in env['CXXFLAGS'] :
+          env['CXXFLAGS'] += flags + ' -shared' 
+       
         env['CFLAGS'] += ' -Os'
         env['CXXFLAGS'] += ' -Os -fPIC -fvisibility=default'
         env['CXXFLAGS'] += ' -I{}/sources/cxx-stl/gnu-libstdc++/{}/include'.format(
