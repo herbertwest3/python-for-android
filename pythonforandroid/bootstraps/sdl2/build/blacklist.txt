@@ -50,7 +50,7 @@ bsddb/*
 wsgiref/*
 hotshot/*
 pydoc_data/*
-tty.pyo
+#tty.pyo
 anydbm.pyo
 nturl2path.pyo
 LICENCE.txt
