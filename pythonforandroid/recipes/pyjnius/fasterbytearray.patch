@@ -1,0 +1,102 @@
+--- a/jnius/jnius_conversion.pxi	2018-03-25 03:36:31.942375788 +0000
++++ b/jnius/jnius_conversion.pxi 	2018-03-26 09:42:30.338989912 +0000
+@@ -1,6 +1,9 @@
+ from cpython.version cimport PY_MAJOR_VERSION
+ from cpython cimport PyUnicode_DecodeUTF16
+ 
++from cpython cimport array
++import array
++
+ cdef jstringy_arg(argtype):
+     return argtype in ('Ljava/lang/String;',
+                        'Ljava/lang/CharSequence;',
+@@ -11,6 +14,7 @@
+     cdef JavaObject jo
+     cdef JavaClass jc
+     cdef int index
++    #print "release_args begins"
+     for index, argtype in enumerate(definition_args):
+         py_arg = args[index]
+         if argtype[0] == 'L':
+@@ -20,12 +24,20 @@
+                     jstringy_arg(argtype):
+                 j_env[0].DeleteLocalRef(j_env, j_args[index].l)
+         elif argtype[0] == '[':
++            jarg = j_args[index].l
++            array_size = j_env[0].GetArrayLength(j_env, jarg)
++            if array_size==3686400 or array_size==460800 :
++              j_env[0].DeleteLocalRef(j_env, jarg)
++              #print "release_arg special early exit"
++              return
+             ret = convert_jarray_to_python(j_env, argtype[1:], j_args[index].l)
+             try:
++                #print "  release_args try"
+                 args[index][:] = ret
+             except TypeError:
+                 pass
+             j_env[0].DeleteLocalRef(j_env, j_args[index].l)
++    #print "release_args ends"
+ 
+ cdef void populate_args(JNIEnv *j_env, tuple definition_args, jvalue *j_args, args) except *:
+     # do the conversion from a Python object to Java from a Java definition
+@@ -98,7 +110,7 @@
+             if isinstance(py_arg, ByteArray) and argtype != '[B':
+                 raise JavaException(
+                     'Cannot use ByteArray for signature {}'.format(argtype))
+-            if not isinstance(py_arg, (list, tuple, ByteArray, bytes, bytearray)):
++            if not isinstance(py_arg, (list, tuple, ByteArray, bytes, bytearray, memoryview, array.array)):
+                 raise JavaException('Expecting a python list/tuple, got '
+                         '{0!r}'.format(py_arg))
+             j_args[index].l = convert_pyarray_to_java(
+@@ -235,11 +247,15 @@
+     cdef JavaClass ret_jc
+     cdef ByteArray ret_as_bytearray
+ 
++    #print "convert_jarray_to_python %s" %  definition
++
+     if j_object == NULL:
+         return None
+ 
+     array_size = j_env[0].GetArrayLength(j_env, j_object)
+ 
++    #print "  jarray size %d" %  array_size
++
+     r = definition[0]
+     if r == 'Z':
+         j_booleans = j_env[0].GetBooleanArrayElements(
+@@ -254,6 +270,7 @@
+                 j_env, j_object, &iscopy)
+         ret_as_bytearray = ByteArray()
+         ret_as_bytearray.set_buffer(j_env, j_object, array_size, j_bytes)
++        #print "  done creating ByteArray using GetByteArrayElements return"
+         return ret_as_bytearray
+ 
+     elif r == 'C':
+@@ -496,6 +513,7 @@
+ 
+     cdef ByteArray a_bytes
+ 
++    cdef const unsigned char [:] _arr
+ 
+     if definition == 'Ljava/lang/Object;' and len(pyarray) > 0:
+         # then the method will accept any array type as param
+@@ -535,7 +553,19 @@
+             a_bytes = pyarray
+             j_env[0].SetByteArrayRegion(j_env,
+                 ret, 0, array_size, <const_jbyte *>a_bytes._buf)
++        elif isinstance(pyarray, (bytearray, memoryview, array.array)) :
++            #print "pyarray_tojava type IS %s" % type(pyarray)
++            _arr = pyarray
++            #print "  memoryview assignment done"
++            j_env[0].SetByteArrayRegion(j_env, ret, 0, array_size, <const_jbyte *>&_arr[0])  
++            #print "  SetByteArrayRegion done"
+         else:
++            #print "pyarray_tojava type is %s" % type(pyarray)
++            #if isinstance(pyarray, list) : 
++            #  if array_size>0 :
++            #    print "  first element in list is type %s" % type(pyarray[0])
++            #  else :
++            #    print "  empty list"
+             for i in range(array_size):
+                 c_tmp = pyarray[i]
+                 j_byte = <signed char>c_tmp
